@@ -1,6 +1,7 @@
+
 var yyy = document.getElementById('xxx');
 var context = yyy.getContext('2d');
-
+var lineWidth = 4
 
 
 
@@ -11,22 +12,82 @@ autoSetcanvasSize(yyy)
 
 
 listenToUser(yyy)
-pen.onclick = function(){
-eraserEnabled = false
-}
-eraser.onclick = function(){
-  eraserEnabled = true
-}
+
 
 
 /*************/
 
-var erserEnabled = false
+var eraserEnabled = false
+pen.onclick = function(){
+  eraserEnabled = false
+  pen.classList.add('active')
+  eraser.classList.remove('active')
+  }
+  eraser.onclick = function(){
+    eraserEnabled = true
+    eraser.classList.add('active')
+    pen.classList.remove('active')
+  }
+  /*全清*/
+  clear.onclick = function(){
+    context.clearRect(0, 0, yyy.width, yyy.height);
+  }
+  /*保存*/
+  download.onclick = function(){
+    var url = yyy.toDataURL("image/png")
+    console.log(url)
+    var a = document.createElement('a')
+    document.body.appendChild(a)
+    a.href = url
+    a.download= '我的画'
+    a.target = '_blank'
+    a.click()
+  }
+/*******/
+/*画笔颜色*/
+  black.onclick =function(){
+    context.fillStyle = 'black'
+    context.strokeStyle = 'black'
+    black.classList.add('active')
+    red.classList.remove('active')
+    green.classList.remove('active')
+    blue.classList.remove('active')
+  }
 
 
+  red.onclick =function(){
+    context.fillStyle = 'red'
+    context.strokeStyle = 'red'
+    black.classList.remove('active')
+    red.classList.add('active')
+    green.classList.remove('active')
+    blue.classList.remove('active')
+  }
+  green.onclick =function(){
+    context.fillStyle = 'green'
+    context.strokeStyle = 'green'
+    black.classList.remove('active')
+    red.classList.remove('active')
+    green.classList.add('active')
+    blue.classList.remove('active')
+  }
+  blue.onclick =function(){
+    context.fillStyle = 'blue'
+    context.strokeStyle = 'blue'
+    black.classList.remove('active')
+    red.classList.remove('active')
+    green.classList.remove('active')
+    blue.classList.add('active')
+  }
+/*画笔粗细*/
+thin.onclick = function(){
+  lineWidth = 4
+}
+thick.onclick = function(){
+  lineWidth = 10
+}
 /*****/
-
-
+/*创建画笔*/
 function autoSetcanvasSize(canvas){
   
 SetCanvasSize()
@@ -53,7 +114,7 @@ function drawCircle(x,y,radius){
 function drawLine(x1,y1,x2,y2){
   context.beginPath();
   context.moveTo(x1,y1)
-  context.lineWidth = 4
+  context.lineWidth = lineWidth
   context.lineTo(x2,y2)
   context.stroke()
   context.closePath()
@@ -70,7 +131,7 @@ canvas.ontouchstart = function(aaa){
   var x = aaa.touches[0].clientX
   var y = aaa.touches[0].clientY
   using = true
-  if(erserEnabled){
+  if(eraserEnabled){
     context.clearRect(x-5,y-5,20,20)
   }
   else{
@@ -81,7 +142,7 @@ canvas.ontouchmove = function(aaa){
   var x = aaa.touches[0].clientX
   var y = aaa.touches[0].clientY
   if (!using){ return }
-  if(erserEnabled){context.clearRect(x-5,y-5,10,10)}
+  if(eraserEnabled){context.clearRect(x-5,y-5,10,10)}
   else{
     var newPoint = {'x':x, 'y':y}
     drawCircle(x,y,2)
@@ -99,7 +160,7 @@ else{//非触屏设备
     var x = aaa.clientX
     var y = aaa.clientY
     using = true
-    if(erserEnabled){
+    if(eraserEnabled){
       context.clearRect(x-5,y-5,20,20)
     }
     else{
@@ -114,7 +175,7 @@ else{//非触屏设备
     
     
     if (!using){ return }
-    if(erserEnabled){context.clearRect(x-5,y-5,10,10)}
+    if(eraserEnabled){context.clearRect(x-5,y-5,10,10)}
     else{
       var newPoint = {'x':x, 'y':y}
       drawCircle(x,y,2)
